@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRA RSS 2025 — Global Forest Resources Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── DESIGN TOKENS: Digital Canopy ── */
+  :root {
+    --emerald:       #118850;
+    --emerald-dark:  #0a6038;
+    --emerald-mid:   #1aa865;
+    --lime:          #95DD35;
+    --lime-dim:      #7bc420;
+    --cobalt:        #016DA7;
+    --light-blue:    #A4DEFD;
+    --charcoal:      #0F1917;
+    --grey:          #F5F5F5;
+    --white:         #FFFFFF;
+    /* data viz */
+    --orange:        #FC8435;
+    --yellow:        #FEC008;
+    --red:           #EA4139;
+    --purple:        #7B5CC8;
+    --brown:         #A46E30;
+
+    /* LIGHT THEME */
+    --bg:            #FFFFFF;
+    --bg-alt:        #F5F5F5;
+    --bg-card:       #FFFFFF;
+    --text:          #0F1917;
+    --text-mid:      #4a5568;
+    --text-dim:      #718096;
+    --border:        #e2e8f0;
+    --border-mid:    #cbd5e0;
+    --nav-bg:        #FFFFFF;
+    --nav-border:    #e2e8f0;
+  }
+
+  [data-theme="dark"] {
+    --bg:            #0d1612;
+    --bg-alt:        #111e18;
+    --bg-card:       #152018;
+    --text:          #f0faf5;
+    --text-mid:      #a0bfb0;
+    --text-dim:      #6a8f80;
+    --border:        #1e3528;
+    --border-mid:    #2a4535;
+    --nav-bg:        #0d1612;
+    --nav-border:    #1e3528;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--nav-border);
+    padding: 0 48px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .fao-badge {
+    background: var(--emerald);
+    color: white;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    letter-spacing: 1px;
+  }
+  .brand-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .topbar-nav {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+  .topbar-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 7px;
+    transition: all 0.15s;
+  }
+  .topbar-link:hover { color: var(--text); background: var(--bg-alt); }
+  .topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  /* Dark mode toggle */
+  .theme-toggle {
+    width: 44px; height: 24px;
+    background: var(--border);
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  [data-theme="dark"] .theme-toggle { background: var(--emerald); }
+  .theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: white;
+    transition: left 0.25s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  [data-theme="light"] .theme-toggle::after { left: 3px; }
+  [data-theme="dark"]  .theme-toggle::after { left: 23px; }
+  .toggle-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-signin {
+    background: var(--emerald);
+    color: white;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-signin:hover { background: var(--emerald-dark); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 80px 48px 96px;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+  }
+  /* Atmospheric gradient background */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  [data-theme="light"] .hero-bg {
+    background: linear-gradient(135deg,
+      #e8f5ec 0%,
+      #d0eef5 30%,
+      #e8f4fd 60%,
+      #f0faf5 100%
+    );
+  }
+  [data-theme="dark"] .hero-bg {
+    background: linear-gradient(135deg,
+      #061a10 0%,
+      #062030 40%,
+      #0a1525 70%,
+      #0d1612 100%
+    );
+  }
+  /* Gradient orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .orb-1 {
+    width: 500px; height: 400px;
+    top: -100px; left: -60px;
+    background: radial-gradient(circle, rgba(17,136,80,0.25) 0%, transparent 70%);
+  }
+  .orb-2 {
+    width: 400px; height: 400px;
+    top: 50px; right: 100px;
+    background: radial-gradient(circle, rgba(1,109,167,0.18) 0%, transparent 70%);
+  }
+  .orb-3 {
+    width: 300px; height: 300px;
+    bottom: -80px; left: 40%;
+    background: radial-gradient(circle, rgba(149,221,53,0.12) 0%, transparent 70%);
+  }
+  [data-theme="dark"] .orb-1 { background: radial-gradient(circle, rgba(17,136,80,0.35) 0%, transparent 70%); }
+  [data-theme="dark"] .orb-2 { background: radial-gradient(circle, rgba(1,109,167,0.3) 0%, transparent 70%); }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(17,136,80,0.1);
+    border: 1px solid rgba(17,136,80,0.25);
+    color: var(--emerald);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  [data-theme="dark"] .hero-eyebrow {
+    background: rgba(149,221,53,0.1);
+    border-color: rgba(149,221,53,0.25);
+    color: var(--lime);
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: -1px;
+  }
+  .hero h1 .accent { color: var(--emerald); }
+  [data-theme="dark"] .hero h1 .accent { color: var(--lime); }
+  .hero p {
+    font-size: 17px;
+    color: var(--text-mid);
+    max-width: 520px;
+    margin-bottom: 40px;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 36px;
+    margin-bottom: 44px;
+  }
+  .hero-stat-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .stat-divider { width: 1px; background: var(--border); align-self: stretch; }
+  .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--emerald);
+    color: white;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 13px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(17,136,80,0.25);
+  }
+  .btn-primary:hover { background: var(--emerald-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(17,136,80,0.35); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 13px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--border-mid); background: var(--bg-alt); }
+
+  /* Hero visual — right side */
+  .hero-visual {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 42%;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hero-globe-wrap {
+    position: relative;
+    width: 380px; height: 380px;
+  }
+  .globe-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    animation: rotate 20s linear infinite;
+  }
+  .globe-ring-1 {
+    inset: 0;
+    border-color: rgba(17,136,80,0.2);
+  }
+  .globe-ring-2 {
+    inset: 30px;
+    border-color: rgba(1,109,167,0.15);
+    animation-duration: 30s;
+    animation-direction: reverse;
+  }
+  .globe-ring-3 {
+    inset: 60px;
+    border-color: rgba(149,221,53,0.1);
+    animation-duration: 25s;
+  }
+  @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .globe-center {
+    position: absolute;
+    inset: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, rgba(17,136,80,0.4), rgba(1,109,167,0.3) 60%, rgba(0,0,0,0) 100%);
+    border: 1px solid rgba(17,136,80,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .globe-center-inner {
+    font-family: 'Sora', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .data-dot {
+    position: absolute;
+    border-radius: 50%;
+    animation: datapulse 3s ease-in-out infinite;
+  }
+  @keyframes datapulse {
+    0%,100% { opacity:0.5; transform:scale(1); }
+    50%      { opacity:1;   transform:scale(1.4); }
+  }
+
+  /* ── FEATURE STRIP ── */
+  .feature-strip {
+    background: var(--bg-alt);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 48px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    transition: background 0.3s;
+  }
+  .feature-item {
+    padding: 0 28px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .feature-item:first-child { padding-left: 0; }
+  .feature-item:last-child  { border-right: none; }
+  .feature-icon-wrap {
+    width: 40px; height: 40px;
+    background: rgba(17,136,80,0.1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  [data-theme="dark"] .feature-icon-wrap { background: rgba(149,221,53,0.1); }
+  .feature-text h4 { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .feature-text p { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+
+  /* ── ACCESS SECTION ── */
+  .access-section {
+    padding: 80px 48px;
+    background: var(--bg);
+    transition: background 0.3s;
+  }
+  .section-eyebrow {
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--emerald); margin-bottom: 10px;
+  }
+  [data-theme="dark"] .section-eyebrow { color: var(--lime); }
+  .section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 36px; font-weight: 700;
+    color: var(--text); margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .section-desc { font-size: 15px; color: var(--text-dim); max-width: 500px; margin-bottom: 48px; }
+
+  .access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 860px; }
+
+  .access-card {
+    border-radius: 16px;
+    padding: 36px;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+  .access-card.public {
+    background: linear-gradient(135deg, #0a5e30 0%, #0e7a45 50%, #016DA7 100%);
+    color: white;
+  }
+  .access-card.public:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(17,136,80,0.3);
+  }
+  .access-card.auth {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+  .access-card.auth:hover {
+    border-color: var(--emerald);
+    box-shadow: 0 8px 32px rgba(17,136,80,0.1);
+    transform: translateY(-2px);
+  }
+  [data-theme="dark"] .access-card.auth {
+    background: var(--bg-card);
+    border-color: var(--border);
+  }
+  /* Gradient orb in card */
+  .card-orb {
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(149,221,53,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .access-badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+  .access-card.public .access-badge  { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); }
+  .access-card.auth   .access-badge  { background: rgba(17,136,80,0.1); color: var(--emerald); }
+  [data-theme="dark"] .access-card.auth .access-badge { background: rgba(149,221,53,0.1); color: var(--lime); }
+  .access-card h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px; font-weight: 700; margin-bottom: 10px;
+  }
+  .access-card.public h3 { color: white; }
+  .access-card.auth   h3 { color: var(--text); }
+  .access-card p {
+    font-size: 14px; line-height: 1.65; margin-bottom: 24px;
+  }
+  .access-card.public p { color: rgba(255,255,255,0.78); }
+  .access-card.auth   p { color: var(--text-mid); }
+  .access-features { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+  .access-feature {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px;
+  }
+  .access-card.public .access-feature { color: rgba(255,255,255,0.85); }
+  .access-card.auth   .access-feature { color: var(--text-mid); }
+  .check-wrap {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; flex-shrink: 0;
+  }
+  .access-card.public .check-wrap { background: rgba(255,255,255,0.18); color: white; }
+  .access-card.auth   .check-wrap { background: rgba(17,136,80,0.1); color: var(--emerald); }
+  [data-theme="dark"] .access-card.auth .check-wrap { background: rgba(149,221,53,0.12); color: var(--lime); }
+  .access-cta {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 600;
+  }
+  .access-card.public .access-cta { color: white; }
+  .access-card.auth   .access-cta { color: var(--emerald); }
+  [data-theme="dark"] .access-card.auth .access-cta { color: var(--lime); }
+
+  /* ── ABOUT ── */
+  .about-section {
+    background: var(--bg-alt);
+    padding: 80px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: start;
+    transition: background 0.3s;
+  }
+  .about-content h2 {
+    font-family: 'Sora', sans-serif;
+    font-size: 30px; font-weight: 700;
+    color: var(--text); margin-bottom: 16px;
+    letter-spacing: -0.3px; line-height: 1.25;
+  }
+  .about-content p {
+    font-size: 14px; color: var(--text-mid);
+    line-height: 1.75; margin-bottom: 14px;
+  }
+  .about-content p:last-child { margin-bottom: 0; }
+  .timeline { }
+  .tl-item {
+    display: flex; gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .tl-item:first-child { padding-top: 0; }
+  .tl-item:last-child  { border-bottom: none; }
+  .tl-year {
+    font-family: 'Sora', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--emerald); min-width: 52px;
+  }
+  [data-theme="dark"] .tl-year { color: var(--lime); }
+  .tl-content strong { font-size: 13px; font-weight: 600; color: var(--text); display: block; margin-bottom: 3px; }
+  .tl-content span { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+  /* ── GRADIENT BANNER ── */
+  .gradient-banner {
+    margin: 0 48px;
+    border-radius: 20px;
+    padding: 56px 64px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0a5e30 0%, #016DA7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 0;
+  }
+  .banner-orb-1 {
+    position: absolute; top: -60px; left: -40px;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(149,221,53,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .banner-orb-2 {
+    position: absolute; bottom: -80px; right: 200px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(164,222,253,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .banner-text { position: relative; z-index: 1; }
+  .banner-text h3 {
+    font-family: 'Sora', sans-serif;
+    font-size: 28px; font-weight: 700;
+    color: white; margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .banner-text p { font-size: 15px; color: rgba(255,255,255,0.75); }
+  .banner-cta { position: relative; z-index: 1; display: flex; gap: 12px; flex-shrink: 0; }
+  .btn-white {
+    background: white; color: var(--emerald);
+    font-family: 'Sora', sans-serif; font-weight: 600; font-size: 14px;
+    padding: 12px 24px; border-radius: 10px;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .btn-white:hover { background: #f0faf5; transform: translateY(-1px); }
+  .btn-ghost-white {
+    background: rgba(255,255,255,0.12); color: white;
+    font-family: 'Sora', sans-serif; font-weight: 500; font-size: 14px;
+    padding: 12px 24px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.25); cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .btn-ghost-white:hover { background: rgba(255,255,255,0.2); }
+
+  /* ── METRICS ROW ── */
+  .metrics-section {
+    padding: 64px 48px;
+    background: var(--bg);
+    transition: background 0.3s;
+  }
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.25s, background 0.3s, border-color 0.3s;
+  }
+  .metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
+  [data-theme="dark"] .metric-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .metric-icon { font-size: 28px; margin-bottom: 12px; }
+  .metric-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 36px; font-weight: 700;
+    color: var(--emerald); margin-bottom: 4px; line-height: 1;
+  }
+  [data-theme="dark"] .metric-num { color: var(--lime); }
+  .metric-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
+
+  /* ── PARTNERS ── */
+  .partners {
+    padding: 36px 48px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-alt);
+    text-align: center;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .partners p { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 20px; }
+  .partner-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .partner-tag {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 12px; font-weight: 600;
+    padding: 7px 16px; border-radius: 7px;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--charcoal);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  footer p { color: rgba(255,255,255,0.4); font-size: 12px; }
+  footer a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 12px; }
+  footer a:hover { color: white; }
+  .footer-right { margin-left: auto; display: flex; gap: 20px; }
+
+  /* ── LOGIN MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(15,25,23,0.65);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  [data-theme="dark"] .modal { box-shadow: 0 32px 80px rgba(0,0,0,0.5); }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    background: var(--bg-alt);
+    border: none; width: 30px; height: 30px;
+    border-radius: 50%; cursor: pointer;
+    font-size: 14px; color: var(--text-dim);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--border); }
+  .modal-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; }
+  .modal h2 { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+  .modal p  { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-mid); margin-bottom: 5px; }
+  .form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s, background 0.3s;
+  }
+  .form-group input:focus { border-color: var(--emerald); }
+  .remember-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 22px; font-size: 12px;
+  }
+  .remember-row label { display: flex; align-items: center; gap: 6px; color: var(--text-dim); cursor: pointer; }
+  .remember-row a { color: var(--emerald); text-decoration: none; }
+  [data-theme="dark"] .remember-row a { color: var(--lime); }
+  .btn-login {
+    width: 100%;
+    background: var(--emerald); color: white;
+    font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600;
+    border: none; border-radius: 10px; padding: 13px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-login:hover { background: var(--emerald-dark); }
+  .modal-sep {
+    text-align: center; font-size: 11px; color: var(--text-dim);
+    margin: 18px 0; position: relative;
+  }
+  .modal-sep::before, .modal-sep::after {
+    content: ''; position: absolute; top: 50%;
+    width: 40%; height: 1px; background: var(--border);
+  }
+  .modal-sep::before { left: 0; }
+  .modal-sep::after  { right: 0; }
+  .routing-info {
+    background: rgba(17,136,80,0.06);
+    border: 1px solid rgba(17,136,80,0.15);
+    border-radius: 9px;
+    padding: 12px 14px;
+    font-size: 12px; color: var(--emerald); line-height: 1.6;
+  }
+  [data-theme="dark"] .routing-info { background: rgba(149,221,53,0.06); border-color: rgba(149,221,53,0.15); color: var(--lime); }
+  .routing-info strong { display: block; margin-bottom: 3px; font-size: 12px; }
+  /* ── LANG TOGGLE ── */
+  html[data-lang="en"] .es-t { display: none !important; }
+  html[data-lang="es"] .en-t { display: none !important; }
+  .lang-tog { display:flex;align-items:center;background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;overflow:hidden; }
+  .lang-tog button { padding:5px 12px;border:none;background:transparent;cursor:pointer;color:var(--text-dim);font-size:11px;font-weight:700;font-family:'Sora',sans-serif;transition:all 0.15s; }
+  .lang-tog button.active { background:var(--emerald);color:white; }
+  .lang-tog button:hover:not(.active) { background:var(--border);color:var(--text); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="#">
+    <div class="fao-badge">FAO</div>
+    <span class="brand-name">FRA RSS 2025</span>
+  </a>
+  <nav class="topbar-nav">
+    <a class="topbar-link" href="#about"><span class="en-t">About</span><span class="es-t">Acerca de</span></a>
+    <a class="topbar-link" href="#access"><span class="en-t">Results</span><span class="es-t">Resultados</span></a>
+    <a class="topbar-link" href="#"><span class="en-t">Methodology</span><span class="es-t">Metodología</span></a>
+  </nav>
+  <div class="topbar-right">
+    <div class="lang-tog">
+      <button id="lBtnEn" class="active" onclick="setLang('en')">EN</button>
+      <button id="lBtnEs" onclick="setLang('es')">ES</button>
+    </div>
+    <label class="toggle-label">
+      <span id="themeIcon">☀️</span>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
+    </label>
+    <button class="btn-signin" onclick="openModal()">
+      <span class="en-t">Sign in</span><span class="es-t">Iniciar sesión</span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">🌿 FRA RSS 2025 · Global Assessment</div>
+    <h1>Monitoring the world's<br><span class="accent">forest resources</span><br>from space</h1>
+    <p>The Remote Sensing Survey component of FAO's Global Forest Resources Assessment — a systematic analysis of land use and forest cover change across 130+ countries using satellite imagery.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">325K</div>
+        <div class="hero-stat-label"><span class="en-t">Sample plots</span><span class="es-t">Parcelas de muestra</span></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div>
+        <div class="hero-stat-num">133</div>
+        <div class="hero-stat-label"><span class="en-t">Countries</span><span class="es-t">Países</span></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div>
+        <div class="hero-stat-num">4</div>
+        <div class="hero-stat-label"><span class="en-t">Reference years</span><span class="es-t">Años de referencia</span></div>
+      </div>
+      <div class="stat-divider"></div>
+      <div>
+        <div class="hero-stat-num">2025</div>
+        <div class="hero-stat-label"><span class="en-t">Publication</span><span class="es-t">Publicación</span></div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="document.getElementById('access').scrollIntoView({behavior:'smooth'})">
+        <span class="en-t">Explore results →</span><span class="es-t">Explorar resultados →</span>
+      </button>
+      <a href="#about" class="btn-secondary"><span class="en-t">Learn more</span><span class="es-t">Más información</span></a>
+    </div>
+  </div>
+
+  <!-- Animated globe (right side) -->
+  <div class="hero-visual">
+    <div class="hero-globe-wrap">
+      <div class="globe-ring globe-ring-1"></div>
+      <div class="globe-ring globe-ring-2"></div>
+      <div class="globe-ring globe-ring-3"></div>
+      <div class="globe-center">
+        <svg width="200" height="200" viewBox="0 0 200 200" style="position:absolute;opacity:0.6">
+          <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(149,221,53,0.15)" stroke-width="0.5"/>
+          <!-- Simplified continent shapes -->
+          <path d="M40 60 L90 55 L100 75 L95 110 L75 125 L55 115 L35 90 Z" fill="rgba(17,136,80,0.4)"/>
+          <path d="M70 115 L100 120 L108 145 L100 170 L80 175 L65 158 L60 135 Z" fill="rgba(17,136,80,0.35)"/>
+          <path d="M110 60 L165 55 L175 85 L168 120 L148 135 L120 128 L108 100 Z" fill="rgba(17,136,80,0.3)"/>
+        </svg>
+        <div class="globe-center-inner">🌍<br>38.4%<br>forest cover</div>
+      </div>
+      <!-- Data dots -->
+      <div class="data-dot" style="width:8px;height:8px;background:#95DD35;top:60px;left:80px;animation-delay:0s"></div>
+      <div class="data-dot" style="width:6px;height:6px;background:#A4DEFD;top:120px;right:55px;animation-delay:0.8s"></div>
+      <div class="data-dot" style="width:7px;height:7px;background:#FEC008;bottom:70px;left:65px;animation-delay:1.6s"></div>
+      <div class="data-dot" style="width:5px;height:5px;background:#FC8435;top:85px;right:90px;animation-delay:2.4s"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE STRIP -->
+<div class="feature-strip">
+  <div class="feature-item">
+    <div class="feature-icon-wrap">🛰️</div>
+    <div class="feature-text">
+      <h4><span class="en-t">Remote sensing</span><span class="es-t">Teledetección</span></h4>
+      <p><span class="en-t">High-resolution satellite imagery interpreted by trained analysts globally.</span><span class="es-t">Imágenes satelitales de alta resolución interpretadas por analistas capacitados globalmente.</span></p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon-wrap">📐</div>
+    <div class="feature-text">
+      <h4><span class="en-t">Statistically rigorous</span><span class="es-t">Rigor estadístico</span></h4>
+      <p><span class="en-t">Systematic sample design with sampling weights for global representativity.</span><span class="es-t">Diseño muestral sistemático con pesos para representatividad global.</span></p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon-wrap">🔄</div>
+    <div class="feature-text">
+      <h4><span class="en-t">Multi-period</span><span class="es-t">Multi-período</span></h4>
+      <p><span class="en-t">Land use change tracked across 2000, 2010, 2018, and 2024 reference years.</span><span class="es-t">Cambio de uso del suelo en los años de referencia 2000, 2010, 2018 y 2024.</span></p>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon-wrap">📂</div>
+    <div class="feature-text">
+      <h4><span class="en-t">Open methodology</span><span class="es-t">Metodología abierta</span></h4>
+      <p>Fully documented and consistent with FRA 2020 protocols. Reproducible.</p>
+    </div>
+  </div>
+</div>
+
+<!-- METRICS -->
+<section class="metrics-section">
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon">🌲</div>
+      <div class="metric-num">38.4%</div>
+      <div class="metric-label"><span class="en-t">Global forest cover 2024</span><span class="es-t">Cobertura forestal global 2024</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">📉</div>
+      <div class="metric-num">−178M</div>
+      <div class="metric-label"><span class="en-t">Hectares net loss 2000–24</span><span class="es-t">Ha. pérdida neta 2000–24</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🌴</div>
+      <div class="metric-num">44.7%</div>
+      <div class="metric-label"><span class="en-t">Tropical forest share</span><span class="es-t">Proporción forestal tropical</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🎯</div>
+      <div class="metric-num">0.21%</div>
+      <div class="metric-label"><span class="en-t">Annual loss rate 2024</span><span class="es-t">Tasa de pérdida anual 2024</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS SECTION -->
+<section class="access-section" id="access">
+  <div class="section-eyebrow"><span class="en-t">Data access</span><span class="es-t">Acceso a datos</span></div>
+  <h2 class="section-title"><span class="en-t">Explore the data</span><span class="es-t">Explorar los datos</span></h2>
+  <p class="section-desc"><span class="en-t">Access validated global results or sign in for full analytical tools and editing capabilities.</span><span class="es-t">Accedé a resultados globales validados o iniciá sesión para las herramientas de análisis y edición.</span></p>
+
+  <div class="access-grid">
+    <div class="access-card public" onclick="window.location.href='mockup_vercel_v3.html'">
+      <div class="card-orb"></div>
+      <div class="access-badge">🌐 <span class="en-t">Public access</span><span class="es-t">Acceso público</span></div>
+      <h3><span class="en-t">Results Dashboard</span><span class="es-t">Panel de Resultados</span></h3>
+      <p><span class="en-t">Explore consolidated global results: forest cover trends, land use distributions, and regional comparisons.</span><span class="es-t">Explorá resultados globales consolidados: tendencias de cobertura forestal, distribución de usos del suelo y comparativas regionales.</span></p>
+      <div class="access-features">
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Global & regional dashboards</span><span class="es-t">Paneles globales y regionales</span></div>
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Interactive sample map</span><span class="es-t">Mapa de muestras interactivo</span></div>
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Data explorer & custom views</span><span class="es-t">Explorador de datos y vistas personalizadas</span></div>
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Validated, published results</span><span class="es-t">Resultados validados y publicados</span></div>
+      </div>
+      <div class="access-cta"><span class="en-t">Open Dashboard →</span><span class="es-t">Abrir Panel →</span></div>
+    </div>
+
+    <div class="access-card auth" onclick="goToAnalysis(this)">
+      <div class="access-badge">🔐 <span class="en-t">Authorized access</span><span class="es-t">Acceso autorizado</span></div>
+      <h3><span class="en-t">Analysis Platform</span><span class="es-t">Plataforma de Análisis</span></h3>
+      <p><span class="en-t">For FAO staff, national delegates, and authorized analysts. Full editing, QA tools, and raw data access.</span><span class="es-t">Para personal FAO, delegados nacionales y analistas autorizados. Edición completa, herramientas de QA y acceso a datos crudos.</span></p>
+      <div class="access-features">
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Sample editing & QA workflows</span><span class="es-t">Edición de muestras y flujos de QA</span></div>
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Inconsistency detection tools</span><span class="es-t">Herramientas de detección de inconsistencias</span></div>
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Export (CSV, KML, GeoJSON)</span><span class="es-t">Exportación (CSV, KML, GeoJSON)</span></div>
+        <div class="access-feature"><div class="check-wrap">✓</div> <span class="en-t">Role-based data access</span><span class="es-t">Acceso a datos por rol</span></div>
+      </div>
+      <div class="access-cta"><span class="en-t">Sign in →</span><span class="es-t">Iniciar sesión →</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="about-content">
+    <div class="section-eyebrow">About</div>
+    <h2>What is the FRA Remote Sensing Survey?</h2>
+    <p>The Global Forest Resources Assessment Remote Sensing Survey provides independent estimates of forest area and change at national and regional levels using satellite imagery interpretation.</p>
+    <p>Trained interpreters classify land use at over 325,000 sample locations worldwide, following a rigorous protocol that allows comparison across countries and over time.</p>
+    <p>Results feed directly into FAO's flagship forest monitoring reports and inform international policy on deforestation, forest degradation, and sustainable land management.</p>
+  </div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-year">2000</div>
+      <div class="tl-content">
+        <strong>Baseline period</strong>
+        <span>Global land use status established as the foundation reference point.</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2010</div>
+      <div class="tl-content">
+        <strong>First change period</strong>
+        <span>Forest cover and land use changes between 2000 and 2010 quantified.</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2018</div>
+      <div class="tl-content">
+        <strong>Second change period</strong>
+        <span>Continued monitoring. Connects with FRA 2020 published results.</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-year">2024</div>
+      <div class="tl-content">
+        <strong>Current period — FRA 2025</strong>
+        <span>Most recent imagery interpreted. Results being validated and published.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GRADIENT BANNER -->
+<section style="padding:60px 0;background:var(--bg);transition:background 0.3s">
+  <div class="gradient-banner">
+    <div class="banner-orb-1"></div>
+    <div class="banner-orb-2"></div>
+    <div class="banner-text">
+      <h3>Ready to explore the data?</h3>
+      <p>Access validated global results or request authorized access for your country delegation.</p>
+    </div>
+    <div class="banner-cta">
+      <button class="btn-white" onclick="window.location.href='mockup_vercel_v3.html'">🌐 <span class="en-t">View results</span><span class="es-t">Ver resultados</span></button>
+      <button class="btn-ghost-white" onclick="openModal()">🔐 <span class="en-t">Sign in</span><span class="es-t">Iniciar sesión</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<div class="partners" style="margin-top:0">
+  <p>Contributing organizations & institutions</p>
+  <div class="partner-row">
+    <div class="partner-tag">FAO Forestry</div>
+    <div class="partner-tag">JRC</div>
+    <div class="partner-tag">JAXA</div>
+    <div class="partner-tag">USFS</div>
+    <div class="partner-tag">WRI</div>
+    <div class="partner-tag">National Forest Authorities</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fao-badge" style="font-size:10px">FAO</div>
+  <p>© 2025 Food and Agriculture Organization of the United Nations · FRA RSS 2025</p>
+  <div class="footer-right">
+    <a href="#"><span class="en-t">Methodology</span><span class="es-t">Metodología</span></a>
+    <a href="#"><span class="en-t">Contact</span><span class="es-t">Contacto</span></a>
+    <a href="#"><span class="en-t">Terms of Use</span><span class="es-t">Términos de Uso</span></a>
+    <a href="#"><span class="en-t">Privacy</span><span class="es-t">Privacidad</span></a>
+  </div>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-logo">
+      <div class="fao-badge">FAO</div>
+      <span style="font-size:13px;color:var(--text-dim)">FRA RSS 2025</span>
+    </div>
+    <h2><span class="en-t">Sign in</span><span class="es-t">Iniciar sesión</span></h2>
+    <p><span class="en-t">Access the analysis platform with your institutional credentials.</span><span class="es-t">Accedé a la plataforma de análisis con tus credenciales institucionales.</span></p>
+    <div class="form-group">
+      <label><span class="en-t">Email address</span><span class="es-t">Correo electrónico</span></label>
+      <input type="email" placeholder="your.name@fao.org">
+    </div>
+    <div class="form-group">
+      <label><span class="en-t">Password</span><span class="es-t">Contraseña</span></label>
+      <input type="password" placeholder="••••••••">
+    </div>
+    <div class="remember-row">
+      <label><input type="checkbox" checked> &nbsp;<span class="en-t">Remember me for 30 days</span><span class="es-t">Recordarme 30 días</span></label>
+      <a href="#"><span class="en-t">Forgot password?</span><span class="es-t">¿Olvidaste tu contraseña?</span></a>
+    </div>
+    <button class="btn-login" onclick="simulateLogin()"><span class="en-t">Sign in</span><span class="es-t">Iniciar sesión</span></button>
+    <div class="modal-sep"><span class="en-t">role-based routing after login</span><span class="es-t">enrutamiento por rol después del login</span></div>
+    <div class="routing-info">
+      <strong><span class="en-t">How it works</span><span class="es-t">Cómo funciona</span></strong>
+      <span class="en-t">Analysts & admins are routed to the editing platform. Viewers access the results dashboard. Same credentials, same account.</span><span class="es-t">Analistas y admins son dirigidos a la plataforma de edición. Los viewers acceden al panel de resultados. Mismas credenciales, misma cuenta.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setLang(lang) {
+    document.documentElement.setAttribute('data-lang', lang);
+    document.getElementById('lBtnEn').classList.toggle('active', lang === 'en');
+    document.getElementById('lBtnEs').classList.toggle('active', lang === 'es');
+  }
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+  }
+  function openModal()  { document.getElementById('loginModal').classList.add('open'); }
+  function closeModal() { document.getElementById('loginModal').classList.remove('open'); }
+  document.getElementById('loginModal').addEventListener('click', function(e) {
+    if(e.target===this) closeModal();
+  });
+  function simulateLogin() {
+    const btn = document.querySelector('.btn-login');
+    btn.textContent = 'Signing in…';
+    btn.style.opacity = '0.7';
+    setTimeout(() => {
+      btn.textContent = '✓ Redirecting…';
+      btn.style.background = '#118850';
+      setTimeout(() => { window.location.href = 'mockup_streamlit_v2.html'; }, 900);
+    }, 900);
+  }
+  function goToAnalysis(card) {
+    card.style.opacity = '0.75';
+    card.querySelector('.access-cta').textContent = 'Entering platform…';
+    setTimeout(() => { window.location.href = 'mockup_streamlit_v2.html'; }, 600);
+  }
+</script>
+</body>
+</html>

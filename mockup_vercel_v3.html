@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRA RSS 2025 — Results Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  /* ── DESIGN TOKENS: Digital Canopy ── */
+  :root {
+    --emerald:      #118850;
+    --emerald-dark: #0a6038;
+    --emerald-mid:  #1aa865;
+    --lime:         #95DD35;
+    --cobalt:       #016DA7;
+    --light-blue:   #A4DEFD;
+    --charcoal:     #0F1917;
+    --orange:       #FC8435;
+    --yellow:       #FEC008;
+    --red:          #EA4139;
+    --purple:       #7B5CC8;
+    --brown:        #A46E30;
+    --sidebar-w:    232px;
+  }
+
+  /* LIGHT */
+  [data-theme="light"] {
+    --bg:           #F5F5F5;
+    --bg-card:      #FFFFFF;
+    --bg-nav:       #FFFFFF;
+    --bg-hover:     #F0F0F0;
+    --text:         #0F1917;
+    --text-mid:     #3d5449;
+    --text-dim:     #718096;
+    --text-muted:   #a0aec0;
+    --border:       #e2e8f0;
+    --border-mid:   #cbd5e0;
+    --shadow:       0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md:    0 4px 16px rgba(0,0,0,0.08);
+    --accent:       var(--emerald);
+    --accent-bg:    rgba(17,136,80,0.08);
+    --accent-text:  var(--emerald);
+  }
+
+  /* DARK */
+  [data-theme="dark"] {
+    --bg:           #0d1612;
+    --bg-card:      #111e18;
+    --bg-nav:       #0d1612;
+    --bg-hover:     #162218;
+    --text:         #e8f5ef;
+    --text-mid:     #90b8a4;
+    --text-dim:     #5a8070;
+    --text-muted:   #3a5848;
+    --border:       #1e3528;
+    --border-mid:   #2a4535;
+    --shadow:       0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md:    0 4px 20px rgba(0,0,0,0.4);
+    --accent:       var(--lime);
+    --accent-bg:    rgba(149,221,53,0.08);
+    --accent-text:  var(--lime);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-nav);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .sidebar-top {
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+  }
+  .fao-badge {
+    background: var(--emerald);
+    color: white;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    padding: 3px 7px;
+    border-radius: 5px;
+    letter-spacing: 1px;
+  }
+  .brand-name {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .brand-sub { font-size: 11px; color: var(--text-dim); }
+
+  .nav-wrap { padding: 10px 8px; flex: 1; }
+  .nav-section {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    padding: 10px 10px 5px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 1px;
+  }
+  .nav-item:hover { background: var(--bg-hover); color: var(--text); }
+  .nav-item.active {
+    background: var(--accent-bg);
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+  .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+  .nav-badge {
+    margin-left: auto;
+    background: rgba(252,132,37,0.12);
+    color: var(--orange);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 8px;
+  }
+
+  .version-pill {
+    margin: 4px 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-bg);
+    border: 1px solid rgba(17,136,80,0.15);
+    border-radius: 20px;
+    padding: 5px 11px;
+    font-size: 11px;
+    color: var(--accent-text);
+    font-weight: 500;
+  }
+  [data-theme="dark"] .version-pill { border-color: rgba(149,221,53,0.15); }
+  .pulse-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 0.5; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.3); }
+  }
+
+  .sidebar-footer {
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    transition: border-color 0.3s;
+  }
+  .user-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--emerald), var(--cobalt));
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .user-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .user-role { font-size: 10px; color: var(--emerald); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  [data-theme="dark"] .user-role { color: var(--lime); }
+
+  /* ── TOPBAR ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar {
+    height: 52px;
+    background: var(--bg-nav);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+    flex-shrink: 0;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .topbar-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+  .tb-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-mid);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover { border-color: var(--border-mid); color: var(--text); }
+
+  .tb-btn.admin {
+    background: rgba(252,132,37,0.08);
+    border-color: rgba(252,132,37,0.25);
+    color: var(--orange);
+    font-weight: 600;
+  }
+  .tb-btn.admin:hover { background: rgba(252,132,37,0.14); }
+
+  /* Theme toggle */
+  .theme-toggle-wrap {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-dim);
+  }
+  .theme-btn {
+    width: 40px; height: 22px;
+    background: var(--border);
+    border-radius: 11px;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  [data-theme="dark"] .theme-btn { background: var(--emerald); }
+  .theme-btn::after {
+    content: '';
+    position: absolute; top: 3px;
+    width: 16px; height: 16px;
+    border-radius: 50%; background: white;
+    transition: left 0.25s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  [data-theme="light"] .theme-btn::after { left: 3px; }
+  [data-theme="dark"]  .theme-btn::after { left: 21px; }
+
+  /* ── CONTENT ── */
+  .content {
+    flex: 1; overflow-y: auto;
+    padding: 22px 24px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  /* PAGE SWITCHING */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── HERO BANNER ── */
+  .dash-hero {
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  [data-theme="light"] .dash-hero {
+    background: linear-gradient(135deg, #0a5e30 0%, #0e7a45 55%, #016DA7 100%);
+  }
+  [data-theme="dark"] .dash-hero {
+    background: linear-gradient(135deg, #072918 0%, #0a3d25 55%, #062040 100%);
+    border: 1px solid rgba(149,221,53,0.12);
+  }
+  .hero-orb-1 {
+    position: absolute; top: -50px; right: -30px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(149,221,53,0.2) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-orb-2 {
+    position: absolute; bottom: -60px; left: 35%;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(164,222,253,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .dash-hero-inner {
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 40px;
+  }
+  .dash-hero-main { flex: 1; }
+  .dash-eyebrow {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(149,221,53,0.9); margin-bottom: 8px;
+  }
+  .dash-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 26px; font-weight: 700;
+    color: white; margin-bottom: 6px; line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+  .dash-sub { font-size: 13px; color: rgba(255,255,255,0.65); }
+  .hero-stats-row {
+    display: flex; gap: 24px;
+    border-left: 1px solid rgba(255,255,255,0.15);
+    padding-left: 32px;
+  }
+  .hero-kpi { text-align: center; }
+  .hero-kpi-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 26px; font-weight: 700;
+    color: white; line-height: 1;
+  }
+  .hero-kpi-unit { font-size: 14px; color: rgba(149,221,53,0.9); }
+  .hero-kpi-label { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .hero-kpi-divider { width: 1px; background: rgba(255,255,255,0.12); align-self: stretch; }
+
+  /* ── KPI CARDS ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card:hover { box-shadow: var(--shadow-md); }
+  .kpi-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px; border-radius: 12px 12px 0 0;
+  }
+  .kpi-label {
+    font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-family: 'Sora', sans-serif;
+    font-size: 30px; font-weight: 700;
+    color: var(--text); line-height: 1; margin-bottom: 5px;
+    letter-spacing: -0.5px;
+  }
+  .kpi-unit { font-size: 16px; color: var(--text-dim); }
+  .kpi-delta { font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 3px; }
+  .d-up   { color: #16a34a; }
+  .d-down { color: var(--red); }
+  .d-neu  { color: var(--text-dim); }
+
+  /* ── CHARTS ── */
+  .grid-2-1 { display: grid; grid-template-columns: 5fr 3fr; gap: 12px; margin-bottom: 12px; }
+  .grid-3   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .card-eyebrow {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--accent-text); margin-bottom: 3px;
+  }
+  .card-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--text); margin-bottom: 2px;
+  }
+  .card-sub { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
+  .chart-legend {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-dim); }
+  .legend-dot  { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* Big stat card */
+  .big-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 48px; font-weight: 800;
+    line-height: 1; margin: 6px 0 4px;
+    letter-spacing: -1px;
+  }
+  .big-num-sub { font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+
+  /* Gradient stat card */
+  .card-gradient {
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  [data-theme="light"] .card-gradient {
+    background: linear-gradient(135deg, #0a5e30 0%, #016DA7 100%);
+    border: none;
+  }
+  [data-theme="dark"] .card-gradient {
+    background: linear-gradient(135deg, #072918 0%, #062040 100%);
+    border: 1px solid rgba(149,221,53,0.1);
+  }
+  .cg-orb {
+    position: absolute; top: -30px; right: -20px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(149,221,53,0.2) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .cg-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(149,221,53,0.8); margin-bottom: 3px; }
+  .cg-title { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; color: white; margin-bottom: 12px; }
+  .cg-num { font-family: 'Sora', sans-serif; font-size: 42px; font-weight: 800; color: white; line-height: 1; letter-spacing: -1px; }
+  .cg-unit { font-size: 20px; color: rgba(149,221,53,0.8); }
+  .cg-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+
+  /* ── COUNTRY TABLE ── */
+  .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .table-hdr {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: border-color 0.3s;
+  }
+  .table-hdr-title { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
+  .table-hdr-action { font-size: 12px; color: var(--accent-text); cursor: pointer; font-weight: 500; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; padding: 9px 18px;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text-muted);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  td {
+    padding: 10px 18px; font-size: 13px;
+    color: var(--text-mid);
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); color: var(--text); }
+  .region-badge {
+    display: inline-block; font-size: 9px;
+    font-weight: 700; letter-spacing: 0.8px;
+    text-transform: uppercase; padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .r-lac  { background: rgba(17,136,80,0.1); color: var(--emerald); }
+  .r-apac { background: rgba(1,109,167,0.1); color: var(--cobalt); }
+  .r-afr  { background: rgba(252,132,37,0.1); color: var(--orange); }
+  .r-eur  { background: rgba(123,92,200,0.1); color: var(--purple); }
+  .r-nam  { background: rgba(254,192,8,0.12); color: #8a6800; }
+  .bar-cell { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { flex: 1; height: 5px; background: var(--border); border-radius: 3px; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+
+  /* ── MAP ── */
+  .map-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    height: calc(100vh - 148px);
+    position: relative;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .map-controls {
+    position: absolute; top: 12px; left: 12px;
+    z-index: 10; display: flex; gap: 7px;
+  }
+  .map-pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 6px 13px;
+    font-size: 12px; font-weight: 500;
+    color: var(--text-mid);
+    display: flex; align-items: center; gap: 5px;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .map-pill select {
+    background: none; border: none;
+    font-size: 12px; font-family: 'Inter', sans-serif;
+    color: var(--text); outline: none; cursor: pointer;
+    transition: color 0.3s;
+  }
+  .map-legend-box {
+    position: absolute; bottom: 16px; right: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    box-shadow: var(--shadow-md);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .legend-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 11px; color: var(--text-mid); }
+  .legend-circle { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .map-stat-box {
+    position: absolute; top: 12px; right: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .map-stat-num { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent-text); line-height: 1; }
+  .map-stat-label { font-size: 10px; color: var(--text-dim); margin-top: 2px; margin-bottom: 8px; }
+
+  .fake-map {
+    width: 100%; height: 100%;
+  }
+  [data-theme="light"] .fake-map { background: linear-gradient(180deg, #d4eaf7 0%, #c8e0f0 100%); }
+  [data-theme="dark"]  .fake-map { background: linear-gradient(180deg, #0a1628 0%, #0d1e1a 100%); }
+
+  /* ── EXPLORER ── */
+  .explorer-grid {
+    display: grid; grid-template-columns: 250px 1fr; gap: 12px;
+    height: calc(100vh - 148px);
+  }
+  .exp-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .exp-title { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+  .field-group { margin-bottom: 14px; }
+  .field-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-muted); display: block; margin-bottom: 5px;
+  }
+  .exp-select {
+    width: 100%; padding: 7px 10px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 7px; font-size: 12px;
+    font-family: 'Inter', sans-serif; color: var(--text);
+    outline: none; transition: border-color 0.2s, background 0.3s;
+  }
+  .exp-select:focus { border-color: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip {
+    background: var(--accent-bg); color: var(--accent-text);
+    font-size: 11px; font-weight: 600; padding: 3px 9px;
+    border-radius: 10px; cursor: pointer;
+    border: 1px solid transparent; transition: all 0.15s;
+  }
+  .chip.off { background: var(--bg); color: var(--text-muted); border-color: var(--border); }
+  .chip.locked { background: transparent; color: var(--text-muted); border-color: var(--border); opacity: 0.5; cursor: not-allowed; }
+  .apply-btn {
+    width: 100%; background: var(--emerald); color: white;
+    font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 600;
+    border: none; border-radius: 8px; padding: 10px;
+    cursor: pointer; margin-top: 8px; transition: background 0.15s;
+  }
+  .apply-btn:hover { background: var(--emerald-dark); }
+  [data-theme="dark"] .apply-btn { background: var(--lime); color: #0a3a18; }
+  [data-theme="dark"] .apply-btn:hover { background: #7bc420; }
+
+  .exp-result {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .result-hdr {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    transition: border-color 0.3s;
+  }
+  .result-title { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
+  .result-count { font-size: 12px; color: var(--text-dim); }
+  .btn-row { margin-left: auto; display: flex; gap: 6px; }
+  .icon-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 10px; border-radius: 7px; font-size: 12px; font-weight: 500;
+    font-family: 'Inter', sans-serif; cursor: pointer;
+    border: 1px solid var(--border); background: var(--bg);
+    color: var(--text-mid); transition: all 0.15s;
+  }
+  .icon-btn:hover { background: var(--bg-hover); color: var(--text); }
+  .role-banner {
+    margin: 10px 14px 0;
+    background: rgba(1,109,167,0.06);
+    border: 1px solid rgba(1,109,167,0.15);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 12px; color: var(--cobalt);
+    display: flex; align-items: center; gap: 7px;
+  }
+  [data-theme="dark"] .role-banner { background: rgba(164,222,253,0.05); border-color: rgba(164,222,253,0.12); color: var(--light-blue); }
+  .result-scroll { flex: 1; overflow: auto; }
+  .result-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+  .result-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ── ADMIN PANEL ── */
+  .admin-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(15,25,23,0.4);
+    z-index: 1000; align-items: flex-start; justify-content: flex-end;
+    padding: 58px 16px 16px;
+    backdrop-filter: blur(4px);
+  }
+  .admin-overlay.open { display: flex; }
+  .admin-panel {
+    background: var(--bg-card);
+    border: 1px solid rgba(252,132,37,0.25);
+    border-radius: 14px; width: 320px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .ap-hdr {
+    background: rgba(252,132,37,0.07);
+    border-bottom: 1px solid rgba(252,132,37,0.15);
+    padding: 14px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ap-hdr h3 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--orange); }
+  .ap-close { background: none; border: none; font-size: 15px; cursor: pointer; color: var(--orange); opacity: 0.7; }
+  .ap-close:hover { opacity: 1; }
+  .ap-body { padding: 12px 18px; }
+  .ap-body p { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .tg-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .tg-sub { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+  .toggle {
+    width: 36px; height: 20px;
+    border-radius: 10px; position: relative;
+    cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+  }
+  .toggle.on  { background: var(--emerald); }
+  .toggle.off { background: var(--border); }
+  [data-theme="dark"] .toggle.on { background: var(--lime); }
+  .toggle::after {
+    content: ''; position: absolute; top: 3px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: white; transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .toggle.on::after  { left: 19px; }
+  .toggle.off::after { left: 3px; }
+  /* ── LANG TOGGLE ── */
+  html[data-lang="en"] .es-t { display: none !important; }
+  html[data-lang="es"] .en-t { display: none !important; }
+  .lang-tog { display:flex;align-items:center;background:var(--bg-hover);border:1px solid var(--border);border-radius:7px;overflow:hidden; }
+  .lang-tog button { padding:4px 11px;border:none;background:transparent;cursor:pointer;color:var(--text-dim);font-size:11px;font-weight:700;font-family:'Sora',sans-serif;transition:all 0.15s; }
+  .lang-tog button.active { background:var(--accent);color:white; }
+  .lang-tog button:hover:not(.active) { background:var(--border);color:var(--text); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <a href="mockup_landing_v2.html" style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-dim);text-decoration:none;margin-bottom:10px;padding:4px 6px;border-radius:6px;transition:background 0.15s;" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">← Landing</a>
+    <div class="brand-row">
+      <div class="fao-badge">FAO</div>
+      <span class="brand-name">FRA RSS 2025</span>
+    </div>
+    <div class="brand-sub"><span class="en-t">Global Results Platform</span><span class="es-t">Plataforma de Resultados Global</span></div>
+  </div>
+  <nav class="nav-wrap">
+    <div class="nav-section"><span class="en-t">Overview</span><span class="es-t">Resumen</span></div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)">
+      <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div class="nav-section"><span class="en-t">Explore</span><span class="es-t">Explorar</span></div>
+    <div class="nav-item" onclick="showPage('mapa',this)">
+      <span class="nav-icon">🌍</span> <span class="en-t">Sample Map</span><span class="es-t">Mapa de Muestras</span>
+    </div>
+    <div class="nav-item" onclick="showPage('explorador',this)">
+      <span class="nav-icon">🔬</span> <span class="en-t">Data Explorer</span><span class="es-t">Explorador de Datos</span>
+    </div>
+    <div class="nav-section"><span class="en-t">Reports</span><span class="es-t">Informes</span></div>
+    <div class="nav-item">
+      <span class="nav-icon">📄</span> <span class="en-t">Methodology</span><span class="es-t">Metodología</span>
+    </div>
+    <div class="nav-item">
+      <span class="nav-icon">📥</span> <span class="en-t">Downloads</span><span class="es-t">Descargas</span>
+      <span class="nav-badge">PDF</span>
+    </div>
+  </nav>
+  <div class="version-pill">
+    <div class="pulse-dot"></div>
+    v3.1 · validated Apr 2025
+  </div>
+  <div class="sidebar-footer">
+    <div class="user-avatar">MR</div>
+    <div>
+      <div class="user-name">M. Rozendaal</div>
+      <div class="user-role">Admin</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="pageTitle">Global Dashboard</span>
+    <div class="topbar-right">
+      <div class="lang-tog">
+        <button id="lBtnEn" class="active" onclick="setLang('en')">EN</button>
+        <button id="lBtnEs" onclick="setLang('es')">ES</button>
+      </div>
+      <div class="theme-toggle-wrap">
+        <span id="themeIcon">☀️</span>
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme"></button>
+        <span id="themeLabel">Light</span>
+      </div>
+      <button class="tb-btn">🌐 <span class="en-t">All regions ▾</span><span class="es-t">Todas las regiones ▾</span></button>
+      <button class="tb-btn">📅 2024 ▾</button>
+      <button class="tb-btn admin" onclick="openAdmin()">⚙ Admin Panel</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="page active" id="pageDashboard">
+
+      <!-- Hero banner -->
+      <div class="dash-hero">
+        <div class="hero-orb-1"></div>
+        <div class="hero-orb-2"></div>
+        <div class="dash-hero-inner">
+          <div class="dash-hero-main">
+            <div class="dash-eyebrow"><span class="en-t">Key Findings · FRA RSS 2025</span><span class="es-t">Resultados clave · FRA RSS 2025</span></div>
+            <div class="dash-title"><span class="en-t">Global Forest Cover<br>2000 – 2024</span><span class="es-t">Cobertura Forestal Global<br>2000 – 2024</span></div>
+            <div class="dash-sub"><span class="en-t">Validated results · 133 countries · 325,735 sample plots</span><span class="es-t">Resultados validados · 133 países · 325.735 parcelas de muestra</span></div>
+          </div>
+          <div class="hero-stats-row">
+            <div class="hero-kpi">
+              <div class="hero-kpi-num">38.4<span class="hero-kpi-unit">%</span></div>
+              <div class="hero-kpi-label"><span class="en-t">Forest 2024</span><span class="es-t">Bosque 2024</span></div>
+            </div>
+            <div class="hero-kpi-divider"></div>
+            <div class="hero-kpi">
+              <div class="hero-kpi-num">−1.2<span class="hero-kpi-unit">pp</span></div>
+              <div class="hero-kpi-label"><span class="en-t">Change 2000–24</span><span class="es-t">Cambio 2000–24</span></div>
+            </div>
+            <div class="hero-kpi-divider"></div>
+            <div class="hero-kpi">
+              <div class="hero-kpi-num">0.21<span class="hero-kpi-unit">%</span></div>
+              <div class="hero-kpi-label"><span class="en-t">Annual loss rate</span><span class="es-t">Tasa pérdida anual</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI cards -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-bar" style="background:linear-gradient(90deg,var(--emerald),var(--emerald-mid))"></div>
+          <div class="kpi-label"><span class="en-t">Forest Cover 2024</span><span class="es-t">Cobertura Forestal 2024</span></div>
+          <div class="kpi-value">38.4<span class="kpi-unit">%</span></div>
+          <div class="kpi-delta d-down">▼ 1.2 pp vs 2000</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-bar" style="background:linear-gradient(90deg,var(--cobalt),var(--light-blue))"></div>
+          <div class="kpi-label"><span class="en-t">Annual loss rate</span><span class="es-t">Tasa pérdida anual</span></div>
+          <div class="kpi-value">0.21<span class="kpi-unit">%</span></div>
+          <div class="kpi-delta d-up">▲ Improved vs 2018</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-bar" style="background:linear-gradient(90deg,var(--orange),var(--yellow))"></div>
+          <div class="kpi-label"><span class="en-t">Tropical forest share</span><span class="es-t">Proporción forestal tropical</span></div>
+          <div class="kpi-value">44.7<span class="kpi-unit">%</span></div>
+          <div class="kpi-delta d-neu">— of global cover</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-bar" style="background:linear-gradient(90deg,var(--red),var(--orange))"></div>
+          <div class="kpi-label"><span class="en-t">Net loss 2000–2024</span><span class="es-t">Pérdida neta 2000–2024</span></div>
+          <div class="kpi-value">−178<span class="kpi-unit">M ha</span></div>
+          <div class="kpi-delta d-down">▼ Concentrated tropics</div>
+        </div>
+      </div>
+
+      <!-- Charts row 1 -->
+      <div class="grid-2-1">
+        <div class="card">
+          <div class="card-eyebrow">Land cover trend</div>
+          <div class="card-title">Forest Cover Change by Period</div>
+          <div class="card-sub">% of sampled land area globally · 4 reference years</div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#118850"></div> Forest</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#016DA7"></div> Other wooded</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#FEC008"></div> Agriculture</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#A4DEFD"></div> Other land</div>
+          </div>
+          <canvas id="chartCover" height="120"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">IPCC 2024</div>
+          <div class="card-title">Land Category Distribution</div>
+          <div class="card-sub">Global proportions</div>
+          <canvas id="chartIPCC" height="155"></canvas>
+        </div>
+      </div>
+
+      <!-- Charts row 2 -->
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-eyebrow">Net transitions</div>
+          <div class="card-title">Change 2018 → 2024</div>
+          <canvas id="chartChange" style="margin-top:10px" height="140"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-eyebrow">Ecological zones</div>
+          <div class="card-title">Forest by GEZ</div>
+          <canvas id="chartGEZ" style="margin-top:10px" height="140"></canvas>
+        </div>
+        <div class="card-gradient">
+          <div class="cg-orb"></div>
+          <div style="position:relative;z-index:1">
+            <div class="cg-eyebrow">Mangrove forests</div>
+            <div class="cg-title">Coastal forest coverage</div>
+            <div class="cg-num">3.2<span class="cg-unit">%</span></div>
+            <div class="cg-sub">of total forest cover<br>is mangrove / coastal</div>
+            <canvas id="chartMang" style="margin-top:12px" height="80"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Country table -->
+      <div class="table-card">
+        <div class="table-hdr">
+          <span class="table-hdr-title">Country Results — Top 10 by Coverage</span>
+          <span class="table-hdr-action">View all 133 →</span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Country</th><th>Region</th><th>Plots</th><th>Forest Cover 2024</th><th>Change 2000–2024</th></tr>
+          </thead>
+          <tbody>
+            <tr><td style="color:var(--text-muted);font-size:11px">01</td><td><strong style="color:var(--text)">Brazil</strong></td><td><span class="region-badge r-lac">LAC</span></td><td>14,820</td><td><div class="bar-cell">61.4%<div class="bar-bg"><div class="bar-fill" style="width:61%;background:var(--emerald)"></div></div></div></td><td style="color:var(--red);font-size:12px;font-weight:600">▼ 4.2 pp</td></tr>
+            <tr><td style="color:var(--text-muted);font-size:11px">02</td><td><strong style="color:var(--text)">Indonesia</strong></td><td><span class="region-badge r-apac">APAC</span></td><td>9,440</td><td><div class="bar-cell">51.2%<div class="bar-bg"><div class="bar-fill" style="width:51%;background:var(--cobalt)"></div></div></div></td><td style="color:var(--red);font-size:12px;font-weight:600">▼ 6.8 pp</td></tr>
+            <tr><td style="color:var(--text-muted);font-size:11px">03</td><td><strong style="color:var(--text)">D.R. Congo</strong></td><td><span class="region-badge r-afr">AFR</span></td><td>8,310</td><td><div class="bar-cell">67.8%<div class="bar-bg"><div class="bar-fill" style="width:68%;background:var(--orange)"></div></div></div></td><td style="color:var(--red);font-size:12px;font-weight:600">▼ 1.9 pp</td></tr>
+            <tr><td style="color:var(--text-muted);font-size:11px">04</td><td><strong style="color:var(--text)">Russia</strong></td><td><span class="region-badge r-eur">EUR</span></td><td>12,200</td><td><div class="bar-cell">49.3%<div class="bar-bg"><div class="bar-fill" style="width:49%;background:var(--purple)"></div></div></div></td><td style="color:#16a34a;font-size:12px;font-weight:600">▲ 0.4 pp</td></tr>
+            <tr><td style="color:var(--text-muted);font-size:11px">05</td><td><strong style="color:var(--text)">Canada</strong></td><td><span class="region-badge r-nam">NAM</span></td><td>7,800</td><td><div class="bar-cell">38.2%<div class="bar-bg"><div class="bar-fill" style="width:38%;background:var(--yellow)"></div></div></div></td><td style="color:var(--text-dim);font-size:12px">— 0.1 pp</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ MAPA ══ -->
+    <div class="page" id="pageMapa">
+      <div class="map-wrap">
+        <div class="map-controls">
+          <div class="map-pill">🌍 <select><option>All Countries</option><option>Brazil</option><option>Indonesia</option></select></div>
+          <div class="map-pill">🌊 <select><option>Inland + Mangrove</option><option>Inland only</option><option>Mangrove only</option></select></div>
+          <div class="map-pill">🌿 <select><option>All IPCC 2024</option><option>Forest Land</option><option>Cropland</option></select></div>
+        </div>
+        <div class="map-stat-box">
+          <div class="map-stat-num">325K</div>
+          <div class="map-stat-label">plots displayed</div>
+          <div class="map-stat-num" style="font-size:18px">133</div>
+          <div class="map-stat-label">countries</div>
+        </div>
+        <div class="fake-map">
+          <svg viewBox="0 0 1000 540" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+            <defs>
+              <filter id="glow"><feGaussianBlur stdDeviation="2" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- Light theme ocean -->
+            <rect width="1000" height="540" fill="none"/>
+            <!-- North America -->
+            <path d="M70 55 L230 45 L275 80 L290 160 L255 225 L200 265 L150 300 L100 275 L60 215 L50 145 Z" fill="#c8e8d8" stroke="#118850" stroke-width="0.8" stroke-opacity="0.4"/>
+            <!-- South America -->
+            <path d="M190 285 L270 295 L295 355 L282 445 L225 478 L165 448 L152 380 L175 305 Z" fill="#b8e0c8" stroke="#118850" stroke-width="0.8" stroke-opacity="0.3"/>
+            <!-- Europe -->
+            <path d="M415 55 L500 50 L530 85 L518 130 L478 140 L425 118 Z" fill="#c8e8d8" stroke="#016DA7" stroke-width="0.8" stroke-opacity="0.3"/>
+            <!-- Africa -->
+            <path d="M428 140 L520 135 L555 198 L568 310 L525 402 L455 425 L398 360 L385 248 L408 165 Z" fill="#b8e0c8" stroke="#118850" stroke-width="0.8" stroke-opacity="0.3"/>
+            <!-- Asia -->
+            <path d="M535 45 L800 35 L845 105 L825 198 L778 245 L680 255 L590 220 L555 165 Z" fill="#c8e8d8" stroke="#016DA7" stroke-width="0.8" stroke-opacity="0.25"/>
+            <!-- SE Asia -->
+            <path d="M720 240 L795 235 L818 288 L795 322 L748 312 L722 278 Z" fill="#b8e0c8" stroke="#118850" stroke-width="0.8" stroke-opacity="0.3"/>
+            <!-- Australia -->
+            <path d="M762 328 L880 316 L915 375 L892 448 L810 460 L752 426 L738 368 Z" fill="#c8e8d8" stroke="#016DA7" stroke-width="0.8" stroke-opacity="0.25"/>
+            <!-- Sample dots -->
+            <g filter="url(#glow)">
+              <circle cx="220" cy="330" r="4" fill="#118850" opacity="0.9"/>
+              <circle cx="240" cy="350" r="3.5" fill="#118850" opacity="0.9"/>
+              <circle cx="205" cy="342" r="3" fill="#118850" opacity="0.85"/>
+              <circle cx="255" cy="328" r="4" fill="#118850" opacity="0.9"/>
+              <circle cx="230" cy="362" r="3" fill="#118850" opacity="0.8"/>
+              <circle cx="462" cy="225" r="4" fill="#118850" opacity="0.9"/>
+              <circle cx="478" cy="240" r="3.5" fill="#118850" opacity="0.85"/>
+              <circle cx="450" cy="248" r="3" fill="#118850" opacity="0.8"/>
+              <circle cx="750" cy="182" r="4" fill="#118850" opacity="0.85"/>
+              <circle cx="765" cy="195" r="3.5" fill="#118850"/>
+              <!-- Agriculture -->
+              <circle cx="155" cy="152" r="4" fill="#FEC008" opacity="0.9"/>
+              <circle cx="172" cy="140" r="3.5" fill="#FEC008"/>
+              <circle cx="140" cy="162" r="3" fill="#FEC008" opacity="0.85"/>
+              <circle cx="615" cy="142" r="4" fill="#FEC008" opacity="0.9"/>
+              <circle cx="600" cy="150" r="3.5" fill="#FEC008"/>
+              <!-- Other -->
+              <circle cx="108" cy="240" r="3.5" fill="#FC8435" opacity="0.85"/>
+              <circle cx="800" cy="380" r="3.5" fill="#FC8435" opacity="0.85"/>
+              <circle cx="820" cy="392" r="3" fill="#FC8435" opacity="0.8"/>
+              <!-- Scattered -->
+              <circle cx="195" cy="308" r="3" fill="#118850" opacity="0.7"/>
+              <circle cx="268" cy="358" r="3" fill="#118850" opacity="0.7"/>
+              <circle cx="455" cy="262" r="3" fill="#118850" opacity="0.7"/>
+              <circle cx="502" cy="270" r="3" fill="#118850" opacity="0.7"/>
+              <circle cx="735" cy="198" r="3" fill="#118850" opacity="0.7"/>
+              <circle cx="778" cy="178" r="3" fill="#118850" opacity="0.7"/>
+            </g>
+          </svg>
+        </div>
+        <div class="map-legend-box">
+          <div class="legend-title">IPCC 2024 Category</div>
+          <div class="legend-item"><div class="legend-circle" style="background:#118850"></div> Forest Land</div>
+          <div class="legend-item"><div class="legend-circle" style="background:#016DA7"></div> Other Wooded</div>
+          <div class="legend-item"><div class="legend-circle" style="background:#FEC008"></div> Cropland</div>
+          <div class="legend-item"><div class="legend-circle" style="background:#7B5CC8"></div> Wetland</div>
+          <div class="legend-item"><div class="legend-circle" style="background:#FC8435"></div> Settlement</div>
+          <div class="legend-item"><div class="legend-circle" style="background:#858B88"></div> Other Land</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ EXPLORADOR ══ -->
+    <div class="page" id="pageExplorador">
+      <div class="role-banner" style="margin-bottom:12px">
+        ℹ️ Viewing as <strong>Admin</strong>. Some fields hidden for Viewer role.
+        <a href="#" style="color:var(--accent-text);font-weight:600;margin-left:4px">Manage →</a>
+      </div>
+      <div class="explorer-grid">
+        <div class="exp-panel">
+          <div class="exp-title">Build your view</div>
+          <div class="field-group">
+            <label class="field-label">Rows (group by)</label>
+            <select class="exp-select"><option>Country</option><option>Region</option><option>Ecological Zone</option></select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Columns</label>
+            <select class="exp-select"><option>IPCC 2024 Category</option><option>Land Use 2024</option></select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Values</label>
+            <select class="exp-select"><option>% of sampled area</option><option>Plot count</option></select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Filters</label>
+            <div class="chips">
+              <span class="chip">All regions</span>
+              <span class="chip off">Tropical</span>
+              <span class="chip off">Boreal</span>
+              <span class="chip">Inland</span>
+              <span class="chip off">Mangrove</span>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Fields (viewer role)</label>
+            <div class="chips">
+              <span class="chip">Forest cover</span>
+              <span class="chip">IPCC category</span>
+              <span class="chip locked">🔒 QA flags</span>
+              <span class="chip locked">🔒 Corrections</span>
+            </div>
+          </div>
+          <button class="apply-btn">Apply view →</button>
+        </div>
+        <div class="exp-result">
+          <div class="result-hdr">
+            <span class="result-title">Results</span>
+            <span class="result-count">133 rows · 6 columns</span>
+            <div class="btn-row">
+              <button class="icon-btn">📥 CSV</button>
+              <button class="icon-btn">📊 Chart</button>
+            </div>
+          </div>
+          <div class="result-scroll">
+            <table>
+              <thead><tr><th>Country</th><th>Forest Land %</th><th>Other Wooded %</th><th>Cropland %</th><th>Grassland %</th><th>Other %</th></tr></thead>
+              <tbody>
+                <tr><td><strong style="color:var(--text)">Brazil</strong></td><td>61.4</td><td>8.2</td><td>18.3</td><td>7.1</td><td>5.0</td></tr>
+                <tr><td><strong style="color:var(--text)">Indonesia</strong></td><td>51.2</td><td>5.8</td><td>28.4</td><td>6.2</td><td>8.4</td></tr>
+                <tr><td><strong style="color:var(--text)">D.R. Congo</strong></td><td>67.8</td><td>9.1</td><td>14.6</td><td>5.4</td><td>3.1</td></tr>
+                <tr><td><strong style="color:var(--text)">Russia</strong></td><td>49.3</td><td>12.4</td><td>10.2</td><td>18.6</td><td>9.5</td></tr>
+                <tr><td><strong style="color:var(--text)">Canada</strong></td><td>38.2</td><td>11.0</td><td>8.4</td><td>14.2</td><td>28.2</td></tr>
+                <tr><td><strong style="color:var(--text)">Bolivia</strong></td><td>52.7</td><td>6.3</td><td>22.4</td><td>12.8</td><td>5.8</td></tr>
+                <tr><td><strong style="color:var(--text)">Peru</strong></td><td>58.1</td><td>5.4</td><td>14.8</td><td>11.2</td><td>10.5</td></tr>
+                <tr><td><strong style="color:var(--text)">Myanmar</strong></td><td>42.0</td><td>7.8</td><td>31.2</td><td>9.4</td><td>9.6</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-panel">
+    <div class="ap-hdr">
+      <h3>⚙ Public visibility control</h3>
+      <button class="ap-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="ap-body">
+      <p>Toggle what Viewer-role users can see.</p>
+      <div class="toggle-row"><div><div class="tg-label">Forest Cover %</div><div class="tg-sub">Main KPI + hero banner</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+      <div class="toggle-row"><div><div class="tg-label">IPCC Distribution</div><div class="tg-sub">Donut chart</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+      <div class="toggle-row"><div><div class="tg-label">Country table</div><div class="tg-sub">Top countries breakdown</div></div><div class="toggle on" onclick="toggleSwitch(this)"></div></div>
+      <div class="toggle-row"><div><div class="tg-label">Annual loss rate</div><div class="tg-sub">Pre-publication metric</div></div><div class="toggle off" onclick="toggleSwitch(this)"></div></div>
+      <div class="toggle-row"><div><div class="tg-label">Change 2018→2024</div><div class="tg-sub">Net transitions chart</div></div><div class="toggle off" onclick="toggleSwitch(this)"></div></div>
+      <div class="toggle-row"><div><div class="tg-label">Explorer: raw fields</div><div class="tg-sub">Plot-level data access</div></div><div class="toggle off" onclick="toggleSwitch(this)"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── LANG TOGGLE ── */
+  function setLang(lang) {
+    document.documentElement.setAttribute('data-lang', lang);
+    document.getElementById('lBtnEn').classList.toggle('active', lang === 'en');
+    document.getElementById('lBtnEs').classList.toggle('active', lang === 'es');
+  }
+  /* ── THEME TOGGLE ── */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+    document.getElementById('themeIcon').textContent  = isDark ? '☀️' : '🌙';
+    document.getElementById('themeLabel').textContent = isDark ? 'Light' : 'Dark';
+    // Update charts on theme change
+    updateChartTheme(newTheme);
+  }
+
+  /* ── NAV ── */
+  function showPage(name, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const labels = { dashboard:'Global Dashboard', mapa:'Sample Map', explorador:'Data Explorer' };
+    document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+    document.getElementById('pageTitle').textContent = labels[name] || name;
+    if(el) el.classList.add('active');
+  }
+
+  /* ── ADMIN ── */
+  function openAdmin()  { document.getElementById('adminOverlay').classList.add('open'); }
+  function closeAdmin() { document.getElementById('adminOverlay').classList.remove('open'); }
+  document.getElementById('adminOverlay').addEventListener('click', e => { if(e.target === document.getElementById('adminOverlay')) closeAdmin(); });
+  function toggleSwitch(el) { el.classList.toggle('on'); el.classList.toggle('off'); }
+
+  /* ── CHARTS ── */
+  const charts = {};
+
+  function getChartColors(theme) {
+    return {
+      grid:  theme==='dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+      tick:  theme==='dark' ? 'rgba(255,255,255,0.45)' : 'rgba(15,25,23,0.5)',
+      bord:  theme==='dark' ? '#111e18' : '#FFFFFF',
+    };
+  }
+
+  function buildCharts(theme) {
+    const c = getChartColors(theme);
+    Chart.defaults.color = c.tick;
+
+    charts.cover = new Chart(document.getElementById('chartCover'), {
+      type: 'bar',
+      data: {
+        labels: ['2000','2010','2018','2024'],
+        datasets: [
+          { label:'Forest',       data:[39.6,39.0,38.7,38.4], backgroundColor:'#118850' },
+          { label:'Other Wooded', data:[8.4,8.5,8.6,8.7],     backgroundColor:'#016DA7' },
+          { label:'Agriculture',  data:[30.2,30.8,31.0,31.2],  backgroundColor:'#FEC008' },
+          { label:'Other',        data:[21.8,21.7,21.7,21.7],  backgroundColor:'#A4DEFD' },
+        ]
+      },
+      options: {
+        plugins:{ legend:{ display:false } },
+        scales:{
+          x:{ stacked:true, grid:{ display:false }, ticks:{ font:{size:11} } },
+          y:{ stacked:true, max:100, ticks:{ font:{size:11}, callback:v=>v+'%' }, grid:{ color:c.grid } }
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+
+    charts.ipcc = new Chart(document.getElementById('chartIPCC'), {
+      type:'doughnut',
+      data:{
+        labels:['Forest Land','Cropland','Grassland','Wetland','Settlement','Other'],
+        datasets:[{ data:[38.4,31.2,18.1,3.4,2.6,6.3],
+          backgroundColor:['#118850','#FEC008','#016DA7','#7B5CC8','#FC8435','#A4DEFD'],
+          borderWidth:2, borderColor: c.bord }]
+      },
+      options:{
+        plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, boxWidth:10, padding:8 } } },
+        cutout:'62%', responsive:true, maintainAspectRatio:false
+      }
+    });
+
+    charts.change = new Chart(document.getElementById('chartChange'), {
+      type:'bar',
+      data:{
+        labels:['Forest\ngain','Stable\nforest','Forest\nloss','NF gain','Stable\nother'],
+        datasets:[{ data:[2.1,36.3,3.2,4.5,53.9],
+          backgroundColor:['#118850','#95DD35','#EA4139','#FEC008','#A4DEFD'],
+          borderRadius:4 }]
+      },
+      options:{
+        plugins:{ legend:{ display:false } },
+        scales:{
+          x:{ grid:{ display:false }, ticks:{ font:{size:10} } },
+          y:{ ticks:{ font:{size:10}, callback:v=>v+'%' }, grid:{ color:c.grid } }
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+
+    charts.gez = new Chart(document.getElementById('chartGEZ'), {
+      type:'bar',
+      data:{
+        labels:['Tropical','Subtropical','Temperate','Boreal','Polar'],
+        datasets:[{ data:[44.7,12.3,21.8,19.6,1.6],
+          backgroundColor:['#118850','#95DD35','#016DA7','#7B5CC8','#A4DEFD'],
+          borderRadius:4 }]
+      },
+      options:{
+        indexAxis:'y',
+        plugins:{ legend:{ display:false } },
+        scales:{
+          x:{ ticks:{ font:{size:10}, callback:v=>v+'%' }, grid:{ color:c.grid } },
+          y:{ grid:{ display:false }, ticks:{ font:{size:10} } }
+        },
+        responsive:true, maintainAspectRatio:false
+      }
+    });
+
+    charts.mang = new Chart(document.getElementById('chartMang'), {
+      type:'doughnut',
+      data:{
+        labels:['Inland','Mangrove'],
+        datasets:[{ data:[96.8,3.2],
+          backgroundColor:['rgba(255,255,255,0.25)','#95DD35'],
+          borderWidth:2, borderColor:'transparent' }]
+      },
+      options:{
+        plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, boxWidth:8, padding:6, color:'rgba(255,255,255,0.6)' } } },
+        cutout:'55%', responsive:true, maintainAspectRatio:false
+      }
+    });
+  }
+
+  function updateChartTheme(theme) {
+    const c = getChartColors(theme);
+    Chart.defaults.color = c.tick;
+    Object.values(charts).forEach(ch => {
+      if(!ch) return;
+      ch.data.datasets.forEach(ds => { if(ds.borderColor && ds.borderColor !== 'transparent') ds.borderColor = c.bord; });
+      if(ch.options.scales) {
+        Object.values(ch.options.scales).forEach(sc => {
+          if(sc.grid) sc.grid.color = c.grid;
+        });
+      }
+      ch.update();
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    buildCharts(document.documentElement.getAttribute('data-theme') || 'light');
+  });
+</script>
+</body>
+</html>
